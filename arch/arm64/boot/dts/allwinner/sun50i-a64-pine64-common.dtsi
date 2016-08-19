@@ -45,6 +45,7 @@
 / {
 
 	aliases {
+		ethernet0 = &emac;
 		serial0 = &uart0;
 	};
 
