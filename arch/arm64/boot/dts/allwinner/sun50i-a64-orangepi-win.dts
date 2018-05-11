@@ -164,10 +164,9 @@
 #include "axp803.dtsi"
 
 &reg_aldo1 {
-	regulator-always-on;
-	regulator-min-microvolt = <1800000>;
-	regulator-max-microvolt = <3300000>;
-	regulator-name = "afvcc-csi";
+	regulator-min-microvolt = <2800000>;
+	regulator-max-microvolt = <2800000>;
+	regulator-name = "vcc-csi";
 };
 
 &reg_aldo2 {
@@ -241,7 +240,13 @@
 &reg_eldo1 {
 	regulator-min-microvolt = <1800000>;
 	regulator-max-microvolt = <1800000>;
-	regulator-name = "cpvdd";
+	regulator-name = "vcc-pc";
+};
+
+&reg_eldo3 {
+	regulator-min-microvolt = <1500000>;
+	regulator-max-microvolt = <1800000>;
+	regulator-name = "dvdd-csi";
 };
 
 &reg_fldo1 {
