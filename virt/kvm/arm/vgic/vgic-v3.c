@@ -40,6 +40,43 @@ static bool lr_signals_eoi_mi(u64 lr_val)
 	       !(lr_val & ICH_LR_HW);
 }
 
+/*
+ * Looks up the struct vgic_irq for a given interrupt ID, but just scans
+ * the local ap_list to find an LPI, instead of going through the whole
+ * per-VM LPI list, which can be rather long and requires a per-VM lock.
+ * Otherwise behaves the same as vgic_get_irq().
+ */
+static struct vgic_irq *get_irq_from_ap_list(struct kvm_vcpu *vcpu, u32 intid)
+{
+	struct vgic_irq *irq;
+	unsigned long flags;
+
+	if (intid <= VGIC_MAX_SPI)
+		return vgic_get_irq(vcpu->kvm, vcpu, intid);
+
+	if (unlikely(intid < VGIC_MIN_LPI)) {
+		WARN(1, "Looking up struct vgic_irq for reserved INTID");
+		return NULL;
+	}
+
+	/* Iterate through the ap_list to find the LPI we found in an LR. */
+	spin_lock_irqsave(&vcpu->arch.vgic_cpu.ap_list_lock, flags);
+	list_for_each_entry(irq, &vcpu->arch.vgic_cpu.ap_list_head, ap_list) {
+		if (irq->intid != intid)
+			continue;
+
+		vgic_get_irq_kref(irq);
+		goto out_unlock;
+	}
+
+	irq = NULL;
+
+out_unlock:
+	spin_unlock_irqrestore(&vcpu->arch.vgic_cpu.ap_list_lock, flags);
+
+	return irq;
+}
+
 void vgic_v3_fold_lr_state(struct kvm_vcpu *vcpu)
 {
 	struct vgic_cpu *vgic_cpu = &vcpu->arch.vgic_cpu;
@@ -72,7 +109,7 @@ void vgic_v3_fold_lr_state(struct kvm_vcpu *vcpu)
 			kvm_notify_acked_irq(vcpu->kvm, 0,
 					     intid - VGIC_NR_PRIVATE_IRQS);
 
-		irq = vgic_get_irq(vcpu->kvm, vcpu, intid);
+		irq = get_irq_from_ap_list(vcpu, intid);
 		if (!irq)	/* An LPI could have been unmapped. */
 			continue;
 
