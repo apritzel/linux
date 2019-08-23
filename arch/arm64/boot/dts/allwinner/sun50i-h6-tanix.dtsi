@@ -10,6 +10,7 @@
 
 / {
 	aliases {
+		ethernet0 = &emac;
 		serial0 = &uart0;
 	};
 
@@ -84,6 +85,10 @@
 	};
 };
 
+&ac200_pwm_clk {
+	status = "okay";
+};
+
 &cpu0 {
 	cpu-supply = <&reg_vdd_cpu_gpu>;
 };
@@ -104,6 +109,14 @@
 	status = "okay";
 };
 
+&emac {
+	pinctrl-names = "default";
+	pinctrl-0 = <&ext_rmii_pins>;
+	phy-mode = "rmii";
+	phy-handle = <&ext_rmii_phy>;
+	status = "okay";
+};
+
 &gpu {
 	mali-supply = <&reg_vdd_cpu_gpu>;
 	status = "okay";
@@ -116,6 +129,17 @@
 &hdmi_out {
 	hdmi_out_con: endpoint {
 		remote-endpoint = <&hdmi_con_in>;
+	};
+};
+
+&i2c3 {
+	status = "okay";
+};
+
+&mdio {
+	ext_rmii_phy: ethernet-phy@1 {
+		compatible = "ethernet-phy-ieee802.3-c22";
+		reg = <1>;
 	};
 };
 
@@ -159,6 +183,10 @@
 	vcc-pc-supply = <&reg_vcc1v8>;
 	vcc-pd-supply = <&reg_vcc3v3>;
 	vcc-pg-supply = <&reg_vcc1v8>;
+};
+
+&pwm {
+	status = "okay";
 };
 
 &r_ir {
