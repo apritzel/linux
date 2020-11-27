@@ -70,4 +70,15 @@
 #define RST_BUS_CSI		61
 #define RST_BUS_HDCP		62
 
+/* Additional clocks used in the H616 */
+
+#define RST_BUS_UART4		72
+#define RST_BUS_UART5		73
+#define RST_BUS_I2C4		74
+#define RST_USB_PHY2		75
+#define RST_BUS_OHCI1		76
+#define RST_BUS_OHCI2		77
+#define RST_BUS_EHCI1		78
+#define RST_BUS_EHCI2		79
+
 #endif /* _DT_BINDINGS_RESET_SUN50I_H6_H_ */
