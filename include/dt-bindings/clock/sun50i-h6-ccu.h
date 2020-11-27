@@ -122,4 +122,29 @@
 #define CLK_HDCP		136
 #define CLK_BUS_HDCP		137
 
+/* Additional clocks used in the H616 */
+
+#define CLK_BUS_I2C4		160
+#define CLK_BUS_UART4		161
+#define CLK_BUS_UART5		162
+#define CLK_USB_OHCI1		163
+#define CLK_USB_OHCI2		164
+#define CLK_USB_PHY2		165
+#define CLK_BUS_OHCI1		166
+#define CLK_BUS_OHCI2		167
+#define CLK_BUS_EHCI1		168
+#define CLK_BUS_EHCI2		169
+#define CLK_MBUS_G2D		170
+#define CLK_G2D			171
+#define CLK_BUS_G2D		172
+#define CLK_GPU0		173
+#define CLK_GPU1		174
+#define CLK_EMAC_25M		175
+#define CLK_BUS_EMAC0		CLK_BUS_EMAC
+#define CLK_BUS_EMAC1		176
+#define CLK_AUDIO_CODEC_1X	177
+#define CLK_AUDIO_CODEC_4X	178
+#define CLK_BUS_AUDIO_CODEC	179
+#define CLK_BUS_KEYADC		180
+
 #endif /* _DT_BINDINGS_CLK_SUN50I_H6_H_ */
