@@ -262,6 +262,9 @@ struct sunxi_mmc_cfg {
 
 	/* clock hardware can switch between old and new timing modes */
 	bool ccu_has_timings_switch;
+
+	/* DMA buffers contain word addresses, to cover 34 bits of memory */
+	bool dma_34_bits;
 };
 
 struct sunxi_mmc_host {
@@ -343,7 +346,10 @@ static int sunxi_mmc_init_host(struct sunxi_mmc_host *host)
 	/* Enable CEATA support */
 	mmc_writel(host, REG_FUNS, SDXC_CEATA_ON);
 	/* Set DMA descriptor list base address */
-	mmc_writel(host, REG_DLBA, host->sg_dma);
+	if (host->cfg->dma_34_bits)
+		mmc_writel(host, REG_DLBA, host->sg_dma >> 2);
+	else
+		mmc_writel(host, REG_DLBA, host->sg_dma);
 
 	rval = mmc_readl(host, REG_GCTRL);
 	rval |= SDXC_INTERRUPT_ENABLE_BIT;
@@ -372,9 +378,15 @@ static void sunxi_mmc_init_idma_des(struct sunxi_mmc_host *host,
 			pdes[i].buf_size = cpu_to_le32(data->sg[i].length);
 
 		next_desc += sizeof(struct sunxi_idma_des);
-		pdes[i].buf_addr_ptr1 =
-			cpu_to_le32(sg_dma_address(&data->sg[i]));
-		pdes[i].buf_addr_ptr2 = cpu_to_le32((u32)next_desc);
+		if (host->cfg->dma_34_bits) {
+			pdes[i].buf_addr_ptr1 =
+				cpu_to_le32(sg_dma_address(&data->sg[i])) >> 2;
+			pdes[i].buf_addr_ptr2 = cpu_to_le32((u32)next_desc) >> 2;
+		} else {
+			pdes[i].buf_addr_ptr1 =
+				cpu_to_le32(sg_dma_address(&data->sg[i]));
+			pdes[i].buf_addr_ptr2 = cpu_to_le32((u32)next_desc);
+		}
 	}
 
 	pdes[0].config |= cpu_to_le32(SDXC_IDMAC_DES0_FD);
@@ -1171,6 +1183,15 @@ static const struct sunxi_mmc_cfg sun50i_a64_cfg = {
 	.needs_new_timings = true,
 };
 
+static const struct sunxi_mmc_cfg sun50i_h616_cfg = {
+	.idma_des_size_bits = 16,
+	.clk_delays = NULL,
+	.can_calibrate = true,
+	.mask_data0 = true,
+	.needs_new_timings = true,
+	.dma_34_bits = true,
+};
+
 static const struct sunxi_mmc_cfg sun50i_a64_emmc_cfg = {
 	.idma_des_size_bits = 13,
 	.clk_delays = NULL,
@@ -1186,6 +1207,7 @@ static const struct of_device_id sunxi_mmc_of_match[] = {
 	{ .compatible = "allwinner,sun9i-a80-mmc", .data = &sun9i_a80_cfg },
 	{ .compatible = "allwinner,sun50i-a64-mmc", .data = &sun50i_a64_cfg },
 	{ .compatible = "allwinner,sun50i-a64-emmc", .data = &sun50i_a64_emmc_cfg },
+	{ .compatible = "allwinner,sun50i-h616-mmc", .data = &sun50i_h616_cfg },
 	{ /* sentinel */ }
 };
 MODULE_DEVICE_TABLE(of, sunxi_mmc_of_match);
