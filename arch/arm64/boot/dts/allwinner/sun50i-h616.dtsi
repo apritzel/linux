@@ -261,7 +261,7 @@
 
 		mmc0: mmc@4020000 {
 			compatible = "allwinner,sun50i-h616-mmc",
-				     "allwinner,sun50i-a64-mmc";
+				     "allwinner,sun50i-a100-mmc";
 			reg = <0x04020000 0x1000>;
 			clocks = <&ccu CLK_BUS_MMC0>, <&ccu CLK_MMC0>;
 			clock-names = "ahb", "mmc";
@@ -277,7 +277,7 @@
 
 		mmc1: mmc@4021000 {
 			compatible = "allwinner,sun50i-h616-mmc",
-				     "allwinner,sun50i-a64-mmc";
+				     "allwinner,sun50i-a100-mmc";
 			reg = <0x04021000 0x1000>;
 			clocks = <&ccu CLK_BUS_MMC1>, <&ccu CLK_MMC1>;
 			clock-names = "ahb", "mmc";
