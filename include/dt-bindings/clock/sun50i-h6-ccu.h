@@ -134,5 +134,13 @@
 #define CLK_BUS_OHCI2		167
 #define CLK_BUS_EHCI1		168
 #define CLK_BUS_EHCI2		169
+#define CLK_MBUS_G2D		170
+#define CLK_G2D			171
+#define CLK_BUS_G2D		172
+#define CLK_GPU0		173
+#define CLK_GPU1		174
+#define CLK_EMAC_25M		175
+#define CLK_BUS_EMAC1		176
+#define CLK_BUS_KEYADC		177
 
 #endif /* _DT_BINDINGS_CLK_SUN50I_H6_H_ */

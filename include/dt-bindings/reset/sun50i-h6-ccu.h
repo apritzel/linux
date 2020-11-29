@@ -80,5 +80,7 @@
 #define RST_BUS_OHCI2		77
 #define RST_BUS_EHCI1		78
 #define RST_BUS_EHCI2		79
+#define RST_BUS_EMAC1		80
+#define RST_BUS_KEYADC		81
 
 #endif /* _DT_BINDINGS_RESET_SUN50I_H6_H_ */
