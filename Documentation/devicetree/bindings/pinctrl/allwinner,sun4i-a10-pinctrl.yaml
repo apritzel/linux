@@ -53,6 +53,8 @@ properties:
       - allwinner,sun50i-h5-pinctrl
       - allwinner,sun50i-h6-pinctrl
       - allwinner,sun50i-h6-r-pinctrl
+      - allwinner,sun50i-h616-pinctrl
+      - allwinner,sun50i-h616-r-pinctrl
       - allwinner,suniv-f1c100s-pinctrl
       - nextthing,gr8-pinctrl
 
