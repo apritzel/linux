@@ -309,6 +309,10 @@ static int axp20x_pek_probe(struct platform_device *pdev)
 
 	axp20x_pek->axp20x = dev_get_drvdata(pdev->dev.parent);
 
+	/* In case there is no interrupt line from the AXP towards the CPU. */
+	if (!axp20x_pek->axp20x->regmap_irqc)
+		return -ENODEV;
+
 	axp20x_pek->irq_dbr = platform_get_irq_byname(pdev, "PEK_DBR");
 	if (axp20x_pek->irq_dbr < 0)
 		return axp20x_pek->irq_dbr;
