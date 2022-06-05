@@ -643,7 +643,8 @@
 		};
 
 		i2c3: i2c@5002c00 {
-			compatible = "allwinner,sun6i-a31-i2c";
+			compatible = "allwinner,sun50i-h6-i2c",
+				     "allwinner,sun6i-a31-i2c";
 			reg = <0x05002c00 0x400>;
 			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&ccu CLK_BUS_I2C3>;
@@ -659,10 +660,15 @@
 				reg = <0x10>;
 				clocks = <&ac200_pwm_clk>;
 
-				ac200_ephy: phy {
-					compatible = "x-powers,ac200-ephy";
+				ac200_ephy_ctl: syscon {
+					compatible = "x-powers,ac200-ephy-ctl",
+						     "syscon";
 					nvmem-cells = <&ephy_calib>;
 					nvmem-cell-names = "ephy_calib";
+					#clock-cells = <0>;
+					#reset-cells = <0>;
+					phy-mode = "rmii";
+					status = "disabled";
 				};
 			};
 		};

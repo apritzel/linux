@@ -85,6 +85,12 @@
 	};
 };
 
+&ac200_ephy_ctl {
+	x-powers,led-polarity = <GPIO_ACTIVE_HIGH>;
+	phy-address = <1>;
+	status = "okay";
+};
+
 &ac200_pwm_clk {
 	status = "okay";
 };
@@ -140,6 +146,8 @@
 	ext_rmii_phy: ethernet-phy@1 {
 		compatible = "ethernet-phy-ieee802.3-c22";
 		reg = <1>;
+		resets = <&ac200_ephy_ctl>;
+		reset-names = "phy";
 	};
 };
 
