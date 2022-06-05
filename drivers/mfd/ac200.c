@@ -47,8 +47,8 @@ static struct mfd_cell ac200_cells[] = {
 		.name		= "ac200-efuse",
 		.of_compatible	= "x-powers,ac200-efuse",
 	}, {
-		.name		= "ac200-ephy",
-		.of_compatible	= "x-powers,ac200-ephy",
+		.name		= "ac200-ephy-ctl",
+		.of_compatible	= "x-powers,ac200-ephy-ctl",
 	}, {
 		.name		= "ac200-rtc",
 		.of_compatible	= "x-powers,ac200-rtc",
