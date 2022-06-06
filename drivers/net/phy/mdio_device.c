@@ -6,6 +6,7 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
+#include <linux/clk.h>
 #include <linux/delay.h>
 #include <linux/errno.h>
 #include <linux/gpio.h>
@@ -136,6 +137,14 @@ void mdio_device_reset(struct mdio_device *mdiodev, int value)
 }
 EXPORT_SYMBOL(mdio_device_reset);
 
+static void mdio_device_toggle_clock(struct mdio_device *mdiodev, int value)
+{
+	if (value)
+		clk_prepare_enable(mdiodev->clk);
+	else
+		clk_disable_unprepare(mdiodev->clk);
+}
+
 /**
  * mdio_probe - probe an MDIO device
  * @dev: device to probe
@@ -152,11 +161,13 @@ static int mdio_probe(struct device *dev)
 
 	/* Deassert the reset signal */
 	mdio_device_reset(mdiodev, 0);
+	mdio_device_toggle_clock(mdiodev, 1);
 
 	if (mdiodrv->probe) {
 		err = mdiodrv->probe(mdiodev);
 		if (err) {
 			/* Assert the reset signal */
+			mdio_device_toggle_clock(mdiodev, 0);
 			mdio_device_reset(mdiodev, 1);
 		}
 	}
@@ -174,6 +185,7 @@ static int mdio_remove(struct device *dev)
 		mdiodrv->remove(mdiodev);
 
 	/* Assert the reset signal */
+	mdio_device_toggle_clock(mdiodev, 0);
 	mdio_device_reset(mdiodev, 1);
 
 	return 0;

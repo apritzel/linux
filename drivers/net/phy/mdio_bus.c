@@ -8,6 +8,7 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
+#include <linux/clk.h>
 #include <linux/delay.h>
 #include <linux/device.h>
 #include <linux/errno.h>
@@ -67,6 +68,19 @@ static int mdiobus_register_reset(struct mdio_device *mdiodev)
 	return 0;
 }
 
+static int mdiobus_register_clock(struct mdio_device *mdiodev)
+{
+	struct clk *clk;
+
+	clk = devm_clk_get_optional(&mdiodev->dev, NULL);
+	if (IS_ERR(clk))
+		return PTR_ERR(clk);
+
+	mdiodev->clk = clk;
+
+	return 0;
+}
+
 int mdiobus_register_device(struct mdio_device *mdiodev)
 {
 	int err;
@@ -80,6 +94,10 @@ int mdiobus_register_device(struct mdio_device *mdiodev)
 			return err;
 
 		err = mdiobus_register_reset(mdiodev);
+		if (err)
+			return err;
+
+		err = mdiobus_register_clock(mdiodev);
 		if (err)
 			return err;
 

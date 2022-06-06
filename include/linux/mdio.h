@@ -50,6 +50,7 @@ struct mdio_device {
 	struct reset_control *reset_ctrl;
 	unsigned int reset_assert_delay;
 	unsigned int reset_deassert_delay;
+	struct clk *clk;
 };
 
 static inline struct mdio_device *to_mdio_device(const struct device *dev)
