@@ -1,0 +1,47 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+// Copyright (c) 2022 Arm Ltd.
+
+/dts-v1/;
+
+#include "sun50i-h6-tanix.dtsi"
+
+/ {
+	model = "Eachlink H6 mini";
+	compatible = "eachlink,h6-mini", "allwinner,sun50i-h6";
+};
+
+&ehci3 {
+	status = "disabled";
+};
+
+&led_display {
+	sda-gpios = <&pio 3 26 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>; /* PD26 */
+	scl-gpios = <&pio 7 3 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>; /* PH3 */
+};
+
+&mmc1 {
+	rtl8723bs: sdio-wifi@1 {
+		reg = <1>;
+		interrupt-parent = <&r_pio>;
+		interrupts = <1 0 IRQ_TYPE_LEVEL_LOW>; /* PM0 */
+		interrupt-names = "host-wake";
+	};
+};
+
+&ohci3 {
+	status = "disabled";
+};
+
+&uart1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
+	uart-has-rtscts;
+	status = "okay";
+
+	bluetooth {
+		compatible = "realtek,rtl8723bs-bt";
+		device-wake-gpios = <&r_pio 1 2 GPIO_ACTIVE_HIGH>; /* PM2 */
+		host-wake-gpios = <&r_pio 1 1 GPIO_ACTIVE_HIGH>; /* PM1 */
+		enable-gpios = <&r_pio 1 4 GPIO_ACTIVE_HIGH>; /* PM4 */
+	};
+};
