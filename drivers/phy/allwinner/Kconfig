@@ -57,3 +57,13 @@ config PHY_SUN50I_USB3
 	  part of Allwinner H6 SoC.
 
 	  This driver controls each individual USB 2+3 host PHY combo.
+
+config AC200_PHY_CTL
+	tristate "X-Power AC200 PHY control driver"
+	depends on OF
+	depends on RESET_CONTROLLER
+	select REGMAP_I2C
+	help
+	  Enable this to support the Ethernet PHY operation of the AC200
+	  mixed signal chip. This driver just enables and configures the
+	  PHY, the PHY itself is supported by a standard driver.
