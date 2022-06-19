@@ -150,7 +150,23 @@ static void clk_gate_regmap_unprepare(struct clk_hw *hw)
 	clk_gate_regmap_setclrbit(hw, false);
 }
 
+static int clk_gate_regmap_is_prepared(struct clk_hw *hw)
+{
+	struct clk_gate *gate = to_clk_gate(hw);
+	bool ret;
+
+	ret = regmap_test_bits(gate->regmap, gate->regmap_offs,
+			       BIT(gate->bit_idx));
+
+	/* if a set bit disables this clk, flip it before masking */
+	if (gate->flags & CLK_GATE_SET_TO_DISABLE)
+		ret ^= BIT(gate->bit_idx);
+
+	return ret;
+}
+
 const struct clk_ops clk_gate_regmap_ops = {
+	.is_prepared = clk_gate_regmap_is_prepared,
 	.prepare = clk_gate_regmap_prepare,
 	.unprepare = clk_gate_regmap_unprepare,
 };
