@@ -6,6 +6,7 @@
 #include <linux/clk-provider.h>
 #include <linux/io.h>
 #include <linux/module.h>
+#include <linux/of_device.h>
 #include <linux/platform_device.h>
 
 #include "ccu_common.h"
@@ -1073,7 +1074,7 @@ static struct clk_hw_onecell_data sun50i_h6_hw_clks = {
 		[CLK_HDCP]		= &hdcp_clk.common.hw,
 		[CLK_BUS_HDCP]		= &bus_hdcp_clk.common.hw,
 	},
-	.num = CLK_NUMBER,
+	.num = CLK_NUMBER_H6,
 };
 
 static struct ccu_reset_map sun50i_h6_ccu_resets[] = {
@@ -1183,9 +1184,14 @@ static const u32 usb2_clk_regs[] = {
 
 static int sun50i_h6_ccu_probe(struct platform_device *pdev)
 {
+	const struct sunxi_ccu_desc *desc;
 	void __iomem *reg;
 	u32 val;
 	int i;
+
+	desc = of_device_get_match_data(&pdev->dev);
+	if (!desc)
+		return -EINVAL;
 
 	reg = devm_platform_ioremap_resource(pdev, 0);
 	if (IS_ERR(reg))
@@ -1252,11 +1258,14 @@ static int sun50i_h6_ccu_probe(struct platform_device *pdev)
 	val |= BIT(24);
 	writel(val, reg + SUN50I_H6_HDMI_CEC_CLK_REG);
 
-	return devm_sunxi_ccu_probe(&pdev->dev, reg, &sun50i_h6_ccu_desc);
+	return devm_sunxi_ccu_probe(&pdev->dev, reg, desc);
 }
 
 static const struct of_device_id sun50i_h6_ccu_ids[] = {
-	{ .compatible = "allwinner,sun50i-h6-ccu" },
+	{
+		.compatible = "allwinner,sun50i-h6-ccu",
+		.data = &sun50i_h6_ccu_desc,
+	},
 	{ }
 };
 
