@@ -70,4 +70,13 @@
 #define RST_BUS_CSI		61
 #define RST_BUS_HDCP		62
 
+#define RST_BUS_GPADC		63
+#define RST_BUS_AUDIO_CODEC	64
+#define RST_BUS_OHCI1		65
+#define RST_BUS_EHCI1		66
+#define RST_BUS_MIPI_DSI0	67
+#define RST_BUS_MIPI_DSI1	68
+#define RST_BUS_TCON_LCD1	69
+#define RST_BUS_EDP		70
+
 #endif /* _DT_BINDINGS_RESET_SUN50I_H6_H_ */

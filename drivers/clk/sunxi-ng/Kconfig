@@ -38,7 +38,7 @@ config SUN50I_A100_R_CCU
 	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
 
 config SUN50I_H6_CCU
-	tristate "Support for the Allwinner H6 CCU"
+	tristate "Support for the Allwinner H6 and A63 CCU"
 	default ARM64 && ARCH_SUNXI
 	depends on (ARM64 && ARCH_SUNXI) || COMPILE_TEST
 

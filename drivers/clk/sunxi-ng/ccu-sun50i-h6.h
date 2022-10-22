@@ -53,4 +53,10 @@
 
 #define CLK_NUMBER_H6		(CLK_BUS_HDCP + 1)
 
+#define CLK_PLL_DDR1		138
+
+/* Rest of additional A63 clocks are exported */
+
+#define CLK_NUMBER_A63		(CLK_BUS_TCON_LCD1 + 1)
+
 #endif /* _CCU_SUN50I_H6_H_ */
