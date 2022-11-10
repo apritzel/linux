@@ -131,4 +131,9 @@ config PINCTRL_SUN50I_H616_R
 	default ARM64 && ARCH_SUNXI
 	select PINCTRL_SUNXI
 
+config PINCTRL_SUN8I_V5
+	bool "Support for the Allwinner V5 PIO"
+	default MACH_SUN8I
+	select PINCTRL_SUNXI
+
 endif
