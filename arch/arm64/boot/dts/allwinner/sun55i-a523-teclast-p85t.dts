@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+// Copyright (C) 2023 Arm Ltd.
+
+/dts-v1/;
+
+#include "sun55i-a523.dtsi"
+
+/ {
+	model = "Teclast P85T";
+	compatible = "teclast,p85t", "allwinner,sun55i-a523";
+
+	aliases {
+		serial0 = &uart0;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+};
+
+&uart0 {
+//	pinctrl-names = "default";
+//	pinctrl-0 = <&uart0_ph_pins>;
+	status = "okay";
+};
