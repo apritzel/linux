@@ -46,6 +46,7 @@ properties:
       - allwinner,sun50i-h616-ccu
       - allwinner,sun50i-h616-r-ccu
       - allwinner,sun55i-a523-ccu
+      - allwinner,sun55i-a523-r-ccu
       - allwinner,suniv-f1c100s-ccu
       - nextthing,gr8-ccu
 
@@ -59,6 +60,7 @@ properties:
       - description: Low Frequency Oscillator (usually at 32kHz)
       - description: Internal Oscillator
       - description: Peripherals PLL
+      - description: Audio PLL
 
   clock-names:
     minItems: 2
@@ -67,6 +69,7 @@ properties:
       - const: losc
       - const: iosc
       - const: pll-periph
+      - const: pll-audio
 
 required:
   - "#clock-cells"
@@ -80,54 +83,71 @@ if:
   properties:
     compatible:
       enum:
-        - allwinner,sun8i-a83t-r-ccu
-        - allwinner,sun8i-h3-r-ccu
-        - allwinner,sun20i-d1-r-ccu
-        - allwinner,sun50i-a64-r-ccu
-        - allwinner,sun50i-a100-r-ccu
-        - allwinner,sun50i-h6-r-ccu
-        - allwinner,sun50i-h616-r-ccu
+        - allwinner,sun55i-a523-r-ccu
 
 then:
   properties:
     clocks:
-      minItems: 4
-      maxItems: 4
+      minItems: 5
+      maxItems: 5
 
     clock-names:
-      minItems: 4
-      maxItems: 4
+      minItems: 5
+      maxItems: 5
 
 else:
   if:
     properties:
       compatible:
         enum:
-          - allwinner,sun20i-d1-ccu
-          - allwinner,sun50i-a100-ccu
-          - allwinner,sun50i-h6-ccu
-          - allwinner,sun50i-h616-ccu
-          - allwinner,sun55i-a523-ccu
+          - allwinner,sun8i-a83t-r-ccu
+          - allwinner,sun8i-h3-r-ccu
+          - allwinner,sun20i-d1-r-ccu
+          - allwinner,sun50i-a64-r-ccu
+          - allwinner,sun50i-a100-r-ccu
+          - allwinner,sun50i-h6-r-ccu
+          - allwinner,sun50i-h616-r-ccu
 
   then:
     properties:
       clocks:
-        minItems: 3
-        maxItems: 3
+        minItems: 4
+        maxItems: 4
 
       clock-names:
-        minItems: 3
-        maxItems: 3
+        minItems: 4
+        maxItems: 4
 
   else:
-    properties:
-      clocks:
-        minItems: 2
-        maxItems: 2
+    if:
+      properties:
+        compatible:
+          enum:
+            - allwinner,sun20i-d1-ccu
+            - allwinner,sun50i-a100-ccu
+            - allwinner,sun50i-h6-ccu
+            - allwinner,sun50i-h616-ccu
+            - allwinner,sun55i-a523-ccu
 
-      clock-names:
-        minItems: 2
-        maxItems: 2
+    then:
+      properties:
+        clocks:
+          minItems: 3
+          maxItems: 3
+
+        clock-names:
+          minItems: 3
+          maxItems: 3
+
+    else:
+      properties:
+        clocks:
+          minItems: 2
+          maxItems: 2
+
+        clock-names:
+          minItems: 2
+          maxItems: 2
 
 additionalProperties: false
 
