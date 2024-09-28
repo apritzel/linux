@@ -19,17 +19,18 @@ properties:
   compatible:
     enum:
       - allwinner,sun55i-a523-ccu
+      - allwinner,sun55i-a523-r-ccu
 
   reg:
     maxItems: 1
 
   clocks:
     minItems: 4
-    maxItems: 4
+    maxItems: 5
 
   clock-names:
     minItems: 4
-    maxItems: 4
+    maxItems: 5
 
 required:
   - "#clock-cells"
@@ -60,6 +61,24 @@ then:
         - const: losc
         - const: iosc
         - const: losc-fanout
+
+else:
+  properties:
+    clocks:
+      items:
+        - description: High Frequency Oscillator (usually at 24MHz)
+        - description: Low Frequency Oscillator (usually at 32kHz)
+        - description: Internal Oscillator
+        - description: Peripherals PLL
+        - description: Audio PLL
+
+    clock-names:
+      items:
+        - const: hosc
+        - const: losc
+        - const: iosc
+        - const: pll-periph
+        - const: pll-audio
 
 additionalProperties: false
 
