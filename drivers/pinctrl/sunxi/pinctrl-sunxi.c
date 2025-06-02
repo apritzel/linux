@@ -971,18 +971,21 @@ static int sunxi_pinctrl_gpio_set(struct gpio_chip *chip, unsigned int offset,
 
 	sunxi_data_reg(pctl, offset, &reg, &shift, &mask);
 
-	raw_spin_lock_irqsave(&pctl->lock, flags);
-
-	val = readl(pctl->membase + reg);
-
-	if (value)
-		val |= mask;
-	else
-		val &= ~mask;
-
-	writel(val, pctl->membase + reg);
-
-	raw_spin_unlock_irqrestore(&pctl->lock, flags);
+	if (pctl->flags & SUNXI_PINCTRL_HAS_SET_CLEAR_REGS) {
+		if (value)
+			writel(mask, pctl->membase + reg + DATA_SET_OFFSET);
+		else
+			writel(mask, pctl->membase + reg + DATA_CLR_OFFSET);
+	} else {
+		raw_spin_lock_irqsave(&pctl->lock, flags);
+		val = readl(pctl->membase + reg);
+		if (value)
+			val |= mask;
+		else
+			val &= ~mask;
+		writel(val, pctl->membase + reg);
+		raw_spin_unlock_irqrestore(&pctl->lock, flags);
+	}
 
 	return 0;
 }
