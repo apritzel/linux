@@ -734,9 +734,10 @@ static int sunxi_pinctrl_set_io_bias_cfg(struct sunxi_pinctrl *pctl,
 		else
 			val = 0xD; /* 3.3V */
 
-		reg = readl(pctl->membase + sunxi_grp_config_reg(pin));
+		reg = readl(pctl->membase + sunxi_grp_config_reg(pctl, pin));
 		reg &= ~IO_BIAS_MASK;
-		writel(reg | val, pctl->membase + sunxi_grp_config_reg(pin));
+		writel(reg | val, pctl->membase +
+		       sunxi_grp_config_reg(pctl, pin));
 		return 0;
 	case BIAS_VOLTAGE_PIO_POW_MODE_CTL:
 		val = uV > 1800000 && uV <= 2500000 ? BIT(bank) : 0;
@@ -1072,7 +1073,7 @@ static void sunxi_pinctrl_irq_release_resources(struct irq_data *d)
 static int sunxi_pinctrl_irq_set_type(struct irq_data *d, unsigned int type)
 {
 	struct sunxi_pinctrl *pctl = irq_data_get_irq_chip_data(d);
-	u32 reg = sunxi_irq_cfg_reg(pctl->desc, d->hwirq);
+	u32 reg = sunxi_irq_cfg_reg(pctl, d->hwirq);
 	u8 index = sunxi_irq_cfg_offset(d->hwirq);
 	unsigned long flags;
 	u32 regval;
@@ -1119,7 +1120,7 @@ static int sunxi_pinctrl_irq_set_type(struct irq_data *d, unsigned int type)
 static void sunxi_pinctrl_irq_ack(struct irq_data *d)
 {
 	struct sunxi_pinctrl *pctl = irq_data_get_irq_chip_data(d);
-	u32 status_reg = sunxi_irq_status_reg(pctl->desc, d->hwirq);
+	u32 status_reg = sunxi_irq_status_reg(pctl, d->hwirq);
 	u8 status_idx = sunxi_irq_status_offset(d->hwirq);
 
 	/* Clear the IRQ */
@@ -1129,7 +1130,7 @@ static void sunxi_pinctrl_irq_ack(struct irq_data *d)
 static void sunxi_pinctrl_irq_mask(struct irq_data *d)
 {
 	struct sunxi_pinctrl *pctl = irq_data_get_irq_chip_data(d);
-	u32 reg = sunxi_irq_ctrl_reg(pctl->desc, d->hwirq);
+	u32 reg = sunxi_irq_ctrl_reg(pctl, d->hwirq);
 	u8 idx = sunxi_irq_ctrl_offset(d->hwirq);
 	unsigned long flags;
 	u32 val;
@@ -1146,7 +1147,7 @@ static void sunxi_pinctrl_irq_mask(struct irq_data *d)
 static void sunxi_pinctrl_irq_unmask(struct irq_data *d)
 {
 	struct sunxi_pinctrl *pctl = irq_data_get_irq_chip_data(d);
-	u32 reg = sunxi_irq_ctrl_reg(pctl->desc, d->hwirq);
+	u32 reg = sunxi_irq_ctrl_reg(pctl, d->hwirq);
 	u8 idx = sunxi_irq_ctrl_offset(d->hwirq);
 	unsigned long flags;
 	u32 val;
@@ -1250,7 +1251,7 @@ static void sunxi_pinctrl_irq_handler(struct irq_desc *desc)
 
 	chained_irq_enter(chip, desc);
 
-	reg = sunxi_irq_status_reg_from_bank(pctl->desc, bank);
+	reg = sunxi_irq_status_reg_from_bank(pctl, bank);
 	val = readl(pctl->membase + reg);
 
 	if (val) {
@@ -1491,7 +1492,7 @@ static int sunxi_pinctrl_setup_debounce(struct sunxi_pinctrl *pctl,
 
 		writel(src | div << 4,
 		       pctl->membase +
-		       sunxi_irq_debounce_reg_from_bank(pctl->desc, i));
+		       sunxi_irq_debounce_reg_from_bank(pctl, i));
 	}
 
 	return 0;
@@ -1678,10 +1679,10 @@ int sunxi_pinctrl_init_with_flags(struct platform_device *pdev,
 	for (i = 0; i < pctl->desc->irq_banks; i++) {
 		/* Mask and clear all IRQs before registering a handler */
 		writel(0, pctl->membase +
-			  sunxi_irq_ctrl_reg_from_bank(pctl->desc, i));
+			  sunxi_irq_ctrl_reg_from_bank(pctl, i));
 		writel(0xffffffff,
 		       pctl->membase +
-		       sunxi_irq_status_reg_from_bank(pctl->desc, i));
+		       sunxi_irq_status_reg_from_bank(pctl, i));
 
 		irq_set_chained_handler_and_data(pctl->irq[i],
 						 sunxi_pinctrl_irq_handler,
