@@ -83,6 +83,7 @@ allOf:
           contains:
             enum:
               - x-powers,axp313a
+              - x-powers,axp318w
               - x-powers,axp323
               - x-powers,axp15060
               - x-powers,axp717
@@ -102,6 +103,7 @@ properties:
           - x-powers,axp221
           - x-powers,axp223
           - x-powers,axp313a
+          - x-powers,axp318w
           - x-powers,axp323
           - x-powers,axp717
           - x-powers,axp803
@@ -180,6 +182,14 @@ properties:
     description: >
       DCDC7 power supply node, if present.
 
+  vin8-supply:
+    description: >
+      DCDC7 power supply node, if present.
+
+  vin9-supply:
+    description: >
+      DCDC7 power supply node, if present.
+
   vina-supply:
     description: >
       DCDCA power supply node, if present.
@@ -217,6 +227,14 @@ properties:
       LDO5 power supply node, if present.
 
   aldoin-supply:
+    description: >
+      ALDO* power supply node, if present.
+
+  aldo156in-supply:
+    description: >
+      ALDO* power supply node, if present.
+
+  aldo234in-supply:
     description: >
       ALDO* power supply node, if present.
 
